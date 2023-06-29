@@ -48,6 +48,7 @@ public class KeyboardImeService extends InputMethodService {
     public void onFinishInputView(boolean finishingInput) {
         super.onFinishInputView(finishingInput);
         keyboardShown = false;
+        controller.hideBars();
     }
 
     @Override
@@ -78,8 +79,16 @@ public class KeyboardImeService extends InputMethodService {
                     controller.setModeUpdateSuggestions(true);
                     break;
                 case KeyEvent.KEYCODE_4:
-                    Log.d("NO UPDATE BARS","selected");
+                    Log.d("NO UPDATE BAR","selected");
                     controller.setModeUpdateSuggestions(false);
+                    break;
+                case KeyEvent.KEYCODE_5:
+                    Log.d("MOVE BAR","selected");
+                    controller.setMoveBar(true);
+                    break;
+                case KeyEvent.KEYCODE_6:
+                    Log.d("NO MOVE BAR","selected");
+                    controller.setMoveBar(false);
                     break;
                 case KeyEvent.KEYCODE_BACK:
                     hideKeyboard();
@@ -114,12 +123,24 @@ public class KeyboardImeService extends InputMethodService {
                         char character = (char) code;
                         if(code!=Controller.ENTER_KEY && code!=Controller.DEL_KEY){
                             controller.getTextController().addCharacterWritten(character);
-                            if(isLetter(character)){
-                                if(!key.isSuggestion()){
+                            //TODO character==' '
+                            if(isLetter(character) || character==' '){
+                                if(!key.isSuggestion() && character!=' '){
                                     controller.showBars();
                                 }else {
-                                    if(controller.isModeUpdateSuggestions())
+                                    if(controller.isModeUpdateSuggestions() && character!=' ')
                                         controller.updateBars();
+
+                                    if(controller.isMoveBar()){
+                                        controller.setModeUpdateSuggestions(false);
+                                        controller.hideBars();
+                                        Cell letterCell = controller.getKeysController().getCharPosition(key.getLabel().charAt(0));
+                                        controller.getFocusController().setCurrentFocus(letterCell);
+                                        controller.moveFocusOnKeyboard(letterCell);
+                                        controller.showBars();
+                                    }
+
+
                                 }
                             }
                         }

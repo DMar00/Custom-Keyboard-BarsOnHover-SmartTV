@@ -89,7 +89,9 @@ public class ControllerTwoBars extends Controller{
         int index2 = getSuggestionsController().getBar2().getRowIndex();
         getViewsController().removePrevBars();
         fillBar(index1, sug1, 1);
-        fillBar(index2, sug2, 2);
+
+        if(index2<ROWS)
+            fillBar(index2, sug2, 2);
     }
 
     @Override

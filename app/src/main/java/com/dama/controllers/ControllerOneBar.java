@@ -62,8 +62,8 @@ public class ControllerOneBar extends Controller{
         sug1[1] = checkedSuggestions[0];
 
         //fill others
-        sug1[0] = checkedSuggestions[2];
-        sug1[2] = checkedSuggestions[3];
+        sug1[0] = checkedSuggestions[1];    //2
+        sug1[2] = checkedSuggestions[2];    //3
 
         //put them in keysController
         int index1 = getSuggestionsController().getBar1().getRowIndex();

@@ -29,6 +29,7 @@ public abstract class Controller {
     private TextController textController;
     private SuggestionsController suggestionsController;
     private boolean modeUpdateSuggestions;
+    private boolean moveBar;
 
     public Controller(Context context, FrameLayout rootView) {
         keysController = new KeysController(new Keyboard(context, R.xml.querty));
@@ -36,6 +37,9 @@ public abstract class Controller {
         focusController = new FocusController();
         focusController.setCurrentFocus(new Cell(2,1));
         textController = new TextController();
+
+        modeUpdateSuggestions = true;
+        moveBar = false;
     }
 
     public void drawKeyboard(){
@@ -244,6 +248,14 @@ public abstract class Controller {
         this.modeUpdateSuggestions = modeUpdateSuggestions;
     }
 
+    public boolean isMoveBar() {
+        return moveBar;
+    }
+
+    public void setMoveBar(boolean moveBar) {
+        this.moveBar = moveBar;
+    }
+
     /*****************SUGGESTIONS********************/
     public void showBars(){
         Cell curFocus = focusController.getCurrentFocus();
@@ -262,6 +274,8 @@ public abstract class Controller {
         char [] checkedSuggestions = getCheckedSuggestions(allSuggestions);
 
         //add suggestions
+        for(char c: checkedSuggestions)
+            Log.d("CHECKED SUGG", c+"");
         addSuggestionToBars(checkedSuggestions);
 
         //
@@ -285,6 +299,8 @@ public abstract class Controller {
         char[] allSuggestions = suggestionsController.getSuggestionsChars(sequence);
         char [] checkedSuggestions = getCheckedSuggestions(allSuggestions);
         //
+        for(char c: checkedSuggestions)
+            Log.d("ERRORE",c+"");
         updateSuggestionsBars(checkedSuggestions);
     }
 
@@ -299,7 +315,9 @@ public abstract class Controller {
     protected void fillBar(int index, char[] suggestions, int bar){
         ArrayList<Key> keys = new ArrayList<>();
         for(char s : suggestions){
+            Log.d("ERROR","s: "+s);
             Key k = keysController.getCharToKey(s).clone();
+            Log.d("ERROR","k: "+k.getLabel());
             k.setSuggestion(true);
             keys.add(k);
         }
@@ -327,6 +345,11 @@ public abstract class Controller {
     }
 
     private char[] getCheckedSuggestions(char[] allSuggestions){ //allSuggestions has size = 12
+        for(char v : allSuggestions)
+            Log.d("NOT CHECKED","char: "+v);
+
+
+
         ArrayList<Character> charsToDelete = new ArrayList<>();
 
         //delete from suggestions clicked highlight letter
@@ -353,6 +376,8 @@ public abstract class Controller {
             }
         }
 
+        for(char v : checkedSuggestions)
+            Log.d("CHECKED","char: "+v);
         return checkedSuggestions;
     }
 
