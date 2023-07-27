@@ -49,6 +49,8 @@ public class KeyboardImeService extends InputMethodService {
         super.onFinishInputView(finishingInput);
         keyboardShown = false;
         controller.hideBars();
+        controller.getTextController().reset();
+        controller.resetFocus();
     }
 
     @Override
@@ -115,8 +117,8 @@ public class KeyboardImeService extends InputMethodService {
                 case KeyEvent.KEYCODE_0:    //todo remove - just for emulator test OK
                     Cell focus = controller.getFocusController().getCurrentFocus();
                     Key key = controller.getKeysController().getKeyAtPosition(focus);
-                    temaImeLogger.writeToLog("CENTER: "+key.getLabel()+" - bar: "+controller.whichBar()+" - pos: "+ controller.getPosInBar(),false);
-                    Log.d("prova bar", key.getLabel()+" - bar: "+controller.whichBar()+" - pos: "+ controller.getPosInBar());
+
+
                     int code = key.getCode();
                     if(code!=Controller.FAKE_KEY){
                         handleText(code, ic);
@@ -125,7 +127,7 @@ public class KeyboardImeService extends InputMethodService {
                             controller.getTextController().addCharacterWritten(character);
                             //TODO character==' '
                             if(isLetter(character) || character==' '){
-                                if(!key.isSuggestion() && character!=' '){
+                                if(!key.isSuggestion() /*&& character!=' '*/){  //todo 0307
                                     controller.showBars();
                                 }else {
                                     if(controller.isModeUpdateSuggestions() && character!=' ')
@@ -136,7 +138,9 @@ public class KeyboardImeService extends InputMethodService {
                                         controller.hideBars();
                                         Cell letterCell = controller.getKeysController().getCharPosition(key.getLabel().charAt(0));
                                         controller.getFocusController().setCurrentFocus(letterCell);
+                                        //controller.getFocusController().setPreviousFocus(letterCell);
                                         controller.moveFocusOnKeyboard(letterCell);
+
                                         controller.showBars();
                                     }
 
@@ -174,6 +178,13 @@ public class KeyboardImeService extends InputMethodService {
     }
 
     private void hideKeyboard(){
-        requestHideSelf(0); //calls onFinishInputView
+        requestHideSelf(0);
+        //calls onFinishInputView
+    }
+
+    @Override
+    public void onFinishInput() {
+        super.onFinishInput();
+        controller.getTextController().reset();
     }
 }

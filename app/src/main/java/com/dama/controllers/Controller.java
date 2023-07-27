@@ -208,6 +208,12 @@ public abstract class Controller {
         }
     }
 
+    public void resetFocus(){
+        Cell r = new Cell(2,1);
+        focusController.setCurrentFocus(r);
+        moveFocusOnKeyboard(r);
+    }
+
     /*************************KEYS******************************/
 
     protected void modifyKeyContent(Cell position, int code, String label){
@@ -274,8 +280,6 @@ public abstract class Controller {
         char [] checkedSuggestions = getCheckedSuggestions(allSuggestions);
 
         //add suggestions
-        for(char c: checkedSuggestions)
-            Log.d("CHECKED SUGG", c+"");
         addSuggestionToBars(checkedSuggestions);
 
         //
@@ -315,9 +319,9 @@ public abstract class Controller {
     protected void fillBar(int index, char[] suggestions, int bar){
         ArrayList<Key> keys = new ArrayList<>();
         for(char s : suggestions){
-            Log.d("ERROR","s: "+s);
+            //Log.d("ERROR","s: "+s);
             Key k = keysController.getCharToKey(s).clone();
-            Log.d("ERROR","k: "+k.getLabel());
+            //Log.d("ERROR","k: "+k.getLabel());
             k.setSuggestion(true);
             keys.add(k);
         }
@@ -345,9 +349,11 @@ public abstract class Controller {
     }
 
     private char[] getCheckedSuggestions(char[] allSuggestions){ //allSuggestions has size = 12
-        for(char v : allSuggestions)
-            Log.d("NOT CHECKED","char: "+v);
-
+        int z = 0;
+        for(char v : allSuggestions){
+            Log.d("ALL SUGG","allsugg["+z+"]: "+v);
+            z++;
+        }
 
 
         ArrayList<Character> charsToDelete = new ArrayList<>();
@@ -364,7 +370,7 @@ public abstract class Controller {
 
         //
         int dim = allSuggestions.length-charsToDelete.size();
-        char[] checkedSuggestions = new char[allSuggestions.length-charsToDelete.size()];
+        char[] checkedSuggestions = new char[dim];
         int i = 0;
         for(char c: allSuggestions){
             Cell sugCell = keysController.getCharPosition(c);
@@ -376,8 +382,8 @@ public abstract class Controller {
             }
         }
 
-        for(char v : checkedSuggestions)
-            Log.d("CHECKED","char: "+v);
+        /*for(char v : checkedSuggestions)
+            Log.d("CHECKED","char: "+v);*/
         return checkedSuggestions;
     }
 

@@ -1,6 +1,7 @@
 package com.dama.controllers;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.dama.utils.Cell;
@@ -88,6 +89,21 @@ public class ControllerTwoBars extends Controller{
         int index1 = getSuggestionsController().getBar1().getRowIndex();
         int index2 = getSuggestionsController().getBar2().getRowIndex();
         getViewsController().removePrevBars();
+
+        Log.d("SIZE","size: "+checkedSuggestions.length);
+        int i=0;
+        for(char c: checkedSuggestions){
+            Log.d("CHKSUG","checked["+i+"]: "+c);
+            i++;
+        }
+
+        i=0;
+        for(char c: sug1){
+            Log.d("SUG1","sug1["+i+"]: "+c);
+            i++;
+        }
+
+
         fillBar(index1, sug1, 1);
 
         if(index2<ROWS)
@@ -124,8 +140,12 @@ public class ControllerTwoBars extends Controller{
         Key k3 = getKeysController().getCharToKey(sug[2]);
         Key k4 = getKeysController().getCharToKey(sug[3]);
         Key k5 = getKeysController().getCharToKey(sug[4]);
-        modifyKeyContent(new Cell(noFocusRowIndex,colIndexes[0]), k3.getCode(), k3.getLabel());
-        modifyKeyContent(new Cell(noFocusRowIndex,colIndexes[1]), k4.getCode(), k4.getLabel());
-        modifyKeyContent(new Cell(noFocusRowIndex,colIndexes[2]), k5.getCode(), k5.getLabel());
+
+        //todo 0307 only if not bar
+        if(getKeysController().getKeyAtPosition(getFocusController().getPreviousFocus()).getCode()!=SPACE_KEY){
+            modifyKeyContent(new Cell(noFocusRowIndex,colIndexes[0]), k3.getCode(), k3.getLabel());
+            modifyKeyContent(new Cell(noFocusRowIndex,colIndexes[1]), k4.getCode(), k4.getLabel());
+            modifyKeyContent(new Cell(noFocusRowIndex,colIndexes[2]), k5.getCode(), k5.getLabel());
+        }
     }
 }
